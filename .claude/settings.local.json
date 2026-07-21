@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp \"C:/Users/Talal/AppData/Local/Temp/claude/d--projects-atm-finder-backend/3620366a-f9f7-4eac-9e66-002c7fc3134f/scratchpad/mcb_probe.js\" ./_probe.js)",
+      "Bash(node ./_probe.js)",
+      "Bash(rm -f ./_probe.js)"
+    ]
+  }
+}
