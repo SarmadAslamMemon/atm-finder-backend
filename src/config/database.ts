@@ -5,15 +5,37 @@ import { env } from './env';
 // Windows/ISP DNS sometimes blocks SRV lookups used by mongodb+srv://
 dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
 
+const MAX_CONNECT_RETRIES = 5;
+const RETRY_BASE_DELAY_MS = 2_000;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export async function connectDatabase(): Promise<void> {
   mongoose.set('strictQuery', true);
 
   const uri = env.MONGODB_URI_DIRECT ?? env.MONGODB_URI;
 
-  await mongoose.connect(uri, {
-    serverSelectionTimeoutMS: 15_000,
-  });
-  console.log('MongoDB connected');
+  for (let attempt = 1; attempt <= MAX_CONNECT_RETRIES; attempt++) {
+    try {
+      await mongoose.connect(uri, {
+        serverSelectionTimeoutMS: 15_000,
+      });
+      console.log('MongoDB connected');
+      return;
+    } catch (err) {
+      const isLastAttempt = attempt === MAX_CONNECT_RETRIES;
+      console.error(
+        `MongoDB connection attempt ${attempt}/${MAX_CONNECT_RETRIES} failed:`,
+        err instanceof Error ? err.message : err
+      );
+      if (isLastAttempt) throw err;
+      const delay = RETRY_BASE_DELAY_MS * attempt;
+      console.log(`Retrying MongoDB connection in ${delay}ms...`);
+      await sleep(delay);
+    }
+  }
 }
 export async function disconnectDatabase(): Promise<void> {
   await mongoose.disconnect();

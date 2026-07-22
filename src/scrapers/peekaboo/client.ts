@@ -107,6 +107,50 @@ export function getAlHabibPeekabooPublicConfig(): PeekabooPublicBankConfig {
   return getPeekabooPublicConfig('alhabib', env.ALHABIB_MERCHANT_NAME, env.ALHABIB_ENTITY_ID, 'bank-al-habib');
 }
 
+export function getFaysalPeekabooPublicConfig(): PeekabooPublicBankConfig {
+  return getPeekabooPublicConfig('faysal', 'Faysal Bank', 44, 'faysal-bank-limited');
+}
+
+export function getAskariPeekabooPublicConfig(): PeekabooPublicBankConfig {
+  return getPeekabooPublicConfig('askari', 'Askari Bank', 322, 'askari-bank-limited');
+}
+
+export function getJsBankPeekabooPublicConfig(): PeekabooPublicBankConfig {
+  return getPeekabooPublicConfig('jsbank', 'JS Bank', 325, 'js-bank');
+}
+
+export function getSoneriPeekabooPublicConfig(): PeekabooPublicBankConfig {
+  return getPeekabooPublicConfig('soneri', 'Soneri Bank', 1045, 'soneri-bank-limited');
+}
+
+export function getBopPeekabooPublicConfig(): PeekabooPublicBankConfig {
+  return getPeekabooPublicConfig('bop', 'Bank of Punjab', 4468, 'bank-of-punjab');
+}
+
+export function getNbpPeekabooPublicConfig(): PeekabooPublicBankConfig {
+  return getPeekabooPublicConfig('nbp', 'National Bank of Pakistan', 14708, 'national-bank-of-pakistan');
+}
+
+export function getSindhBankPeekabooPublicConfig(): PeekabooPublicBankConfig {
+  return getPeekabooPublicConfig('sindhbank', 'Sindh Bank', 16745, 'sindh-bank-limited-');
+}
+
+export function getDibPeekabooPublicConfig(): PeekabooPublicBankConfig {
+  return getPeekabooPublicConfig('dib', 'Dubai Islamic Bank', 327, 'dubai-islamic-bank');
+}
+
+export function getBankIslamiPeekabooPublicConfig(): PeekabooPublicBankConfig {
+  return getPeekabooPublicConfig('bankislami', 'BankIslami', 1006, 'bankislami');
+}
+
+export function getAlBarakaPeekabooPublicConfig(): PeekabooPublicBankConfig {
+  return getPeekabooPublicConfig('albaraka', 'Al Baraka Bank', 6095, 'al-baraka-bank');
+}
+
+export function getHabibMetroPeekabooPublicConfig(): PeekabooPublicBankConfig {
+  return getPeekabooPublicConfig('habibmetro', 'Habib Metropolitan Bank', 782, 'habib-metro-bank');
+}
+
 export function getPeekabooConfig(slug: ProviderSlug): PeekabooBankConfig {
   if (slug === 'ubl') return getUblPeekabooConfig();
   if (slug === 'alfalah') return getAlfalahPeekabooConfig();

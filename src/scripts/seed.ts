@@ -45,6 +45,20 @@ const PROVIDERS = [
     slug: 'alhabib',
     logo: 'https://d2liqplnt17rh6.cloudfront.net/logoImages/26bf5b92-38d4-42c2-adfd-634952fa22e6-626.jpeg',
   },
+  { name: 'Faysal Bank', slug: 'faysal' },
+  { name: 'Askari Bank', slug: 'askari' },
+  { name: 'JS Bank', slug: 'jsbank' },
+  { name: 'Soneri Bank', slug: 'soneri' },
+  { name: 'The Bank of Punjab', slug: 'bop' },
+  { name: 'National Bank of Pakistan', slug: 'nbp' },
+  { name: 'Sindh Bank', slug: 'sindhbank' },
+  { name: 'Dubai Islamic Bank Pakistan', slug: 'dib' },
+  { name: 'BankIslami Pakistan', slug: 'bankislami' },
+  { name: 'Al Baraka Bank Pakistan', slug: 'albaraka' },
+  { name: 'Habib Metropolitan Bank', slug: 'habibmetro' },
+  { name: 'The Bank of Khyber', slug: 'bok' },
+  { name: 'Zarai Taraqiati Bank Limited', slug: 'ztbl' },
+  { name: 'First Women Bank Limited', slug: 'fwbl' },
 ];
 
 async function seed(): Promise<void> {
