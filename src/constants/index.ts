@@ -1,4 +1,4 @@
-export const LOCATION_STATUS = ['cash_available', 'no_cash', 'offline', 'unknown'] as const;
+export const LOCATION_STATUS = ['cash_available', 'no_cash', 'offline', 'closed', 'unknown'] as const;
 export type LocationStatus = (typeof LOCATION_STATUS)[number];
 
 export const PROVIDER_SLUGS = [

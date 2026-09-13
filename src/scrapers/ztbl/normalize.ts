@@ -1,4 +1,5 @@
 import { LocationUpsertInput } from '../shared/upsert';
+import { cleanAndNormalizeCity } from '../shared/cities';
 
 export interface ZtblRawLocation {
   id: number;
@@ -52,7 +53,7 @@ export function normalizeZtblLocation(raw: ZtblRawLocation): LocationUpsertInput
 
   return {
     providerSlug: 'ztbl',
-    cityName: name,
+    cityName: cleanAndNormalizeCity(address) || cleanAndNormalizeCity(name),
     locationTypeCode: 'agri',
     externalId: String(raw.code),
     name,

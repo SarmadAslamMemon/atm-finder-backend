@@ -61,3 +61,116 @@ export const PEEKABOO_CITIES = [
 
 /** @deprecated use PEEKABOO_CITIES_FULL */
 export const UBL_CITIES = PEEKABOO_CITIES_FULL;
+
+const CANONICAL_CITIES_DICT: Record<string, string> = {
+  karachi: 'Karachi',
+  lahore: 'Lahore',
+  islamabad: 'Islamabad',
+  rawalpindi: 'Rawalpindi',
+  faisalabad: 'Faisalabad',
+  multan: 'Multan',
+  peshawar: 'Peshawar',
+  quetta: 'Quetta',
+  sialkot: 'Sialkot',
+  gujranwala: 'Gujranwala',
+  gujrat: 'Gujrat',
+  hyderabad: 'Hyderabad',
+  sukkur: 'Sukkur',
+  abbottabad: 'Abbottabad',
+  bahawalpur: 'Bahawalpur',
+  sargodha: 'Sargodha',
+  mardan: 'Mardan',
+  muzaffarabad: 'Muzaffarabad',
+  larkana: 'Larkana',
+  jhelum: 'Jhelum',
+  kasur: 'Kasur',
+  sheikhupura: 'Sheikhupura',
+  sahiwal: 'Sahiwal',
+  okara: 'Okara',
+  'dera ghazi khan': 'Dera Ghazi Khan',
+  'dera ismail khan': 'Dera Ismail Khan',
+  'wah cantt': 'Wah Cantt',
+  chakwal: 'Chakwal',
+  attock: 'Attock',
+  haripur: 'Haripur',
+  swat: 'Swat',
+  bannu: 'Bannu',
+  mingora: 'Mingora',
+  nawabshah: 'Nawabshah',
+  'rahim yar khan': 'Rahim Yar Khan',
+  'rahimyar khan': 'Rahim Yar Khan',
+  mirpur: 'Mirpur',
+  kotli: 'Kotli',
+  bhimber: 'Bhimber',
+  rawalakot: 'Rawalakot',
+  gwadar: 'Gwadar',
+  turbat: 'Turbat',
+  khuzdar: 'Khuzdar',
+  kohat: 'Kohat',
+  mansehra: 'Mansehra',
+  charsadda: 'Charsadda',
+  nowshera: 'Nowshera',
+  swabi: 'Swabi',
+  jacobabad: 'Jacobabad',
+  shikarpur: 'Shikarpur',
+  badin: 'Badin',
+  thatta: 'Thatta',
+  mirpurkhas: 'Mirpur Khas',
+  'mirpur khas': 'Mirpur Khas',
+  kamoke: 'Kamoke',
+  hafizabad: 'Hafizabad',
+  wazirabad: 'Wazirabad',
+  daska: 'Daska',
+  'mandi bahauddin': 'Mandi Bahauddin',
+  kharian: 'Kharian',
+  chiniot: 'Chiniot',
+  jhang: 'Jhang',
+  'toba tek singh': 'Toba Tek Singh',
+  gojra: 'Gojra',
+  samundri: 'Samundri',
+  jaranwala: 'Jaranwala',
+  khanewal: 'Khanewal',
+  vehari: 'Vehari',
+  burewala: 'Burewala',
+  pakpattan: 'Pakpattan',
+  arifwala: 'Arifwala',
+  lodhran: 'Lodhran',
+  bahawalnagar: 'Bahawalnagar',
+  chishtian: 'Chishtian',
+  muzaffargarh: 'Muzaffargarh',
+  layyah: 'Layyah',
+  'kot addu': 'Kot Addu',
+  bhakkar: 'Bhakkar',
+  mianwali: 'Mianwali',
+  khushab: 'Khushab',
+  jauharabad: 'Jauharabad',
+  bhalwal: 'Bhalwal',
+};
+
+export function cleanAndNormalizeCity(rawName: string): string {
+  if (!rawName) return 'Unknown';
+
+  const cleaned = rawName
+    .replace(/[\r\n\t]+/g, ' ')
+    .replace(/[,\-_()]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const lower = cleaned.toLowerCase();
+
+  if (CANONICAL_CITIES_DICT[lower]) {
+    return CANONICAL_CITIES_DICT[lower];
+  }
+
+  for (const [key, canonical] of Object.entries(CANONICAL_CITIES_DICT)) {
+    const regex = new RegExp(`\\b${key}\\b`, 'i');
+    if (regex.test(cleaned)) {
+      return canonical;
+    }
+  }
+
+  return cleaned
+    .split(' ')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
+}

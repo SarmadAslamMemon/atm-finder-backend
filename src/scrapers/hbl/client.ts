@@ -93,28 +93,7 @@ export async function fetchHblLocations(
   city: string,
   type: HblLocationType
 ): Promise<HblRawLocation[]> {
-  const responsePromise = page.waitForResponse(
-    (response) =>
-      response.url().includes(API_PATH) &&
-      response.request().method() === 'POST' &&
-      response.status() === 200,
-    { timeout: env.HBL_REQUEST_TIMEOUT_MS }
-  );
-
-  await page.selectOption('#city_select', city);
-  await page.selectOption('#type_select', type);
-  await page.waitForTimeout(500);
-
-  // Some builds auto-fetch on change; nudge with a change event.
-  await page.locator('#type_select').dispatchEvent('change');
-
-  try {
-    const response = await responsePromise;
-    const payload: unknown = await response.json();
-    return extractHblLocations(payload);
-  } catch {
-    return fetchHblLocationsViaEvaluate(page, city, type);
-  }
+  return fetchHblLocationsViaEvaluate(page, city, type);
 }
 
 async function fetchHblLocationsViaEvaluate(

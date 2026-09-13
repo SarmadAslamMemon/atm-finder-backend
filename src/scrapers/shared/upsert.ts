@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 import { LocationTypeCode } from '../../constants';
 import { City, ICity, ILocation, ILocationAmenities, Location, LocationType, Provider } from '../../models';
+import { cleanAndNormalizeCity } from './cities';
 
 export interface ScraperContext {
   providers: Map<string, Types.ObjectId>;
@@ -50,18 +51,19 @@ export async function resolveCityId(
   ctx: ScraperContext,
   cityName: string
 ): Promise<Types.ObjectId> {
-  const key = cityCacheKey(cityName);
+  const normalized = cleanAndNormalizeCity(cityName);
+  const key = cityCacheKey(normalized);
   const cached = ctx.cityCache.get(key);
   if (cached) return cached;
 
   let city: ICity | null = await City.findOne({
-    name: new RegExp(`^${escapeRegex(cityName.trim())}$`, 'i'),
+    name: new RegExp(`^${escapeRegex(normalized)}$`, 'i'),
     country: 'Pakistan',
   });
 
   if (!city) {
     city = await City.create({
-      name: cityName.trim(),
+      name: normalized,
       country: 'Pakistan',
     });
   }

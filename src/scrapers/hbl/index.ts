@@ -9,13 +9,30 @@ import {
 import { createHblSession, fetchHblLocations } from './client';
 import { normalizeHblLocation } from './normalize';
 
+export const HBL_OFFICIAL_REGIONS = [
+  'AJK (Muzaffarabad)',
+  'Bahawalpur',
+  'Balochistan',
+  'Faisalabad & Sargodha',
+  'Gujranwala',
+  'Gujrat',
+  'Hyderabad & Sukkur',
+  'Islamabad-Rawalpindi',
+  'Karachi',
+  'Lahore',
+  'Mardan',
+  'Multan',
+  'Peshawar',
+  'Sahiwal',
+] as const;
+
 export interface ScrapeHblOptions {
-  cities?: Array<(typeof PAKISTAN_CITIES)[number]['name']>;
+  cities?: readonly string[];
   types?: (typeof HBL_LOCATION_TYPES)[number][];
 }
 
 export async function scrapeHbl(options: ScrapeHblOptions = {}): Promise<void> {
-  const cities = options.cities ?? PAKISTAN_CITIES.map((city) => city.name);
+  const cities = options.cities ?? HBL_OFFICIAL_REGIONS;
   const types = options.types ?? [...HBL_LOCATION_TYPES];
   const ctx = await createScraperContext();
   const stats = createStats();

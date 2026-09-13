@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import authRoutes from './auth.routes';
 import locationsRoutes from './locations.routes';
+import atmsRoutes from './atms.routes';
 import meRoutes from './me.routes';
 import * as geocodeController from '../../controllers/geocode.controller';
 import * as locationController from '../../controllers/location.controller';
@@ -14,5 +15,6 @@ router.get('/location-types', locationController.listLocationTypes);
 router.get('/cities', locationController.listCities);
 router.get('/geocode/reverse', geocodeController.getReverseGeocode);
 router.use('/locations', locationsRoutes);
+router.use('/atms', atmsRoutes);
 
 export default router;

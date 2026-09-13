@@ -1,10 +1,14 @@
 import { Router } from 'express';
 import * as userController from '../../controllers/user.controller';
+import * as authController from '../../controllers/auth.controller';
 import { requireAuth } from '../../middleware/auth';
 
 const router = Router();
 
 router.use(requireAuth);
+
+router.get('/profile', authController.me);
+router.patch('/profile', authController.updateProfile);
 
 router.get('/saved-locations', userController.getSavedLocations);
 router.get('/saved-location-ids', userController.getSavedLocationIds);

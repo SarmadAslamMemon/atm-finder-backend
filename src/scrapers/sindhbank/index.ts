@@ -3,24 +3,19 @@ import { getSindhBankPeekabooPublicConfig } from '../peekaboo/client';
 import { scrapePeekabooPublic } from '../peekaboo/scrape';
 import { PEEKABOO_CITIES } from '../shared/cities';
 
+export { scrapeSindhBankDirect } from './scrape-sindhbank-direct';
+import { scrapeSindhBankDirect } from './scrape-sindhbank-direct';
+
 export interface ScrapeSindhBankOptions {
   cities?: readonly string[];
 }
 
 export async function scrapeSindhBank(options: ScrapeSindhBankOptions = {}): Promise<void> {
-  await scrapePeekabooPublic({
-    config: getSindhBankPeekabooPublicConfig(),
-    cities: options.cities ?? PEEKABOO_CITIES,
-  });
+  await scrapeSindhBankDirect();
 }
 
 async function main(): Promise<void> {
-  await connectDatabase();
-  try {
-    await scrapeSindhBank();
-  } finally {
-    await disconnectDatabase();
-  }
+  await scrapeSindhBankDirect();
 }
 
 if (require.main === module) {

@@ -2,7 +2,7 @@ import { Schema, model, Document, Types } from 'mongoose';
 import { LOCATION_STATUS, LocationStatus } from '../constants';
 
 export interface IReport extends Document {
-  userId: Types.ObjectId;
+  userId?: Types.ObjectId;
   locationId: Types.ObjectId;
   status: LocationStatus;
   note?: string;
@@ -12,7 +12,7 @@ export interface IReport extends Document {
 
 const reportSchema = new Schema<IReport>(
   {
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', index: true },
     locationId: { type: Schema.Types.ObjectId, ref: 'Location', required: true, index: true },
     status: { type: String, enum: LOCATION_STATUS, required: true },
     note: { type: String, trim: true, maxlength: 500 },

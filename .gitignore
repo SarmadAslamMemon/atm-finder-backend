@@ -9,5 +9,11 @@ coverage/
 playwright-report/
 test-results/
 .idea/
-.vscode/
 .tools/
+*.html
+*.dump.json
+nbp_*.json
+faysal_*.html
+branch.json
+askri.json
+test-js.json
