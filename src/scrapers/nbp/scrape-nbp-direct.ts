@@ -327,13 +327,23 @@ export async function scrapeNbpDirect(): Promise<void> {
             $(t).find('tr').slice(1).each((_, tr) => {
               const cells = $(tr).find('td').map((_, td) => $(td).text().replace(/\s+/g, ' ').trim()).get();
               if (cells.length >= 3 && cells[0] && cells[0] !== 'Back') {
-                rawAtms.push({
-                  name: cells[0],
-                  branchCode: cells[1],
-                  onSite: cells[2] === 'Yes',
-                  cityName: city.name
-                });
-                count++;
+                const name = cells[0].trim();
+                const branchCode = cells[1].trim();
+                if (
+                  branchCode.match(/^\d{3,5}$/) &&
+                  !name.includes('function') &&
+                  !name.includes('tdmouseover') &&
+                  !name.includes('ATM Location') &&
+                  !name.includes('font-family')
+                ) {
+                  rawAtms.push({
+                    name,
+                    branchCode,
+                    onSite: cells[2] === 'Yes',
+                    cityName: city.name
+                  });
+                  count++;
+                }
               }
             });
           }
@@ -349,6 +359,15 @@ export async function scrapeNbpDirect(): Promise<void> {
 
     await browser.close();
 
+    // Clean any junk from rawAtms before saving
+    rawAtms = rawAtms.filter(a =>
+      a.branchCode &&
+      a.branchCode.match(/^\d{3,5}$/) &&
+      !a.name.includes('function') &&
+      !a.name.includes('tdmouseover') &&
+      !a.name.includes('ATM Location')
+    );
+
     try {
       fs.writeFileSync(atmDumpFile, JSON.stringify(rawAtms, null, 2), 'utf-8');
       console.log(`Saved ${rawAtms.length} scraped ATMs to ${atmDumpFile}`);
@@ -357,8 +376,17 @@ export async function scrapeNbpDirect(): Promise<void> {
     }
   }
 
-  // Deduplicate ATMs
-  const uniqueAtms = Array.from(new Map(rawAtms.map(a => [`${a.cityName}_${a.branchCode}_${a.name}`, a])).values());
+  // Deduplicate ATMs and filter out any corrupt cached entries
+  const uniqueAtms = Array.from(
+    new Map(rawAtms.map(a => [`${a.cityName}_${a.branchCode}_${a.name}`, a])).values()
+  ).filter(a =>
+    a.branchCode &&
+    a.branchCode.match(/^\d{3,5}$/) &&
+    !a.name.includes('function') &&
+    !a.name.includes('tdmouseover') &&
+    !a.name.includes('ATM Location') &&
+    !a.name.includes('font-family')
+  );
   console.log(`\nTotal unique ATMs extracted: ${uniqueAtms.length}`);
 
   const bulkAtmOps: unknown[] = [];

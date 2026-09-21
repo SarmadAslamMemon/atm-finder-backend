@@ -80,7 +80,7 @@ export async function registerUser(input: { name: string; email: string; passwor
 
 export async function loginUser(input: { email: string; password: string }) {
   const user = await User.findOne({ email: input.email.toLowerCase().trim() });
-  if (!user) {
+  if (!user || !user.passwordHash) {
     throw new AuthError('Invalid email or password', 401);
   }
 
@@ -98,6 +98,52 @@ export async function loginUser(input: { email: string; password: string }) {
     await sendOtpEmail(user.email, otpCode);
 
     throw new AuthError('Please verify your account first. An OTP was sent to your email.', 403);
+  }
+
+  const token = signAccessToken({ userId: String(user._id), email: user.email });
+  return { token, user: formatUser(user) };
+}
+
+export async function googleLoginUser(input: {
+  idToken?: string;
+  email: string;
+  name: string;
+  avatar?: string | null;
+  googleId?: string;
+}) {
+  const cleanEmail = input.email.toLowerCase().trim();
+  let user = await User.findOne({ email: cleanEmail });
+
+  if (!user) {
+    user = await User.create({
+      name: input.name.trim() || 'Google User',
+      email: cleanEmail,
+      avatar: input.avatar ?? null,
+      isActive: true,
+      authProvider: 'google',
+      googleId: input.googleId,
+    });
+
+    await UserPreference.create({ userId: user._id });
+  } else {
+    let updated = false;
+    if (!user.isActive) {
+      user.isActive = true;
+      user.otpCode = undefined;
+      user.otpExpiresAt = undefined;
+      updated = true;
+    }
+    if (input.avatar && !user.avatar) {
+      user.avatar = input.avatar;
+      updated = true;
+    }
+    if (input.googleId && !user.googleId) {
+      user.googleId = input.googleId;
+      updated = true;
+    }
+    if (updated) {
+      await user.save();
+    }
   }
 
   const token = signAccessToken({ userId: String(user._id), email: user.email });

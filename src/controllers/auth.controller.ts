@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { z } from 'zod';
 import { AuthRequest } from '../middleware/auth';
-import { AuthError, getUserById, loginUser, registerUser, verifyOtpCode, resendOtpCode, updateUserProfile } from '../services/auth.service';
+import { AuthError, getUserById, loginUser, registerUser, verifyOtpCode, resendOtpCode, updateUserProfile, googleLoginUser } from '../services/auth.service';
 import { asyncHandler } from '../utils/asyncHandler';
 
 const registerSchema = z.object({
@@ -13,6 +13,28 @@ const registerSchema = z.object({
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
+});
+
+const googleAuthSchema = z.object({
+  idToken: z.string().optional(),
+  email: z.string().email(),
+  name: z.string().min(1).max(100),
+  avatar: z.string().nullable().optional(),
+  googleId: z.string().optional(),
+});
+
+export const googleAuth = asyncHandler(async (req: AuthRequest, res: Response) => {
+  try {
+    const body = googleAuthSchema.parse(req.body);
+    const result = await googleLoginUser(body);
+    res.json(result);
+  } catch (err) {
+    if (err instanceof AuthError) {
+      res.status(err.status).json({ message: err.message });
+      return;
+    }
+    throw err;
+  }
 });
 
 export const register = asyncHandler(async (req: AuthRequest, res: Response) => {

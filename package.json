@@ -46,6 +46,8 @@
     "scrape:ztbl": "tsx src/scrapers/ztbl/index.ts",
     "scrape:fwbl": "tsx src/scrapers/fwbl/index.ts",
     "scrape:mirpur": "tsx src/scrapers/mirpur/index.ts",
+    "scrape:jazzcash": "tsx src/scrapers/jazzcash/index.ts",
+    "scrape:jazzcash:direct": "tsx src/scrapers/jazzcash/scrape-jazzcash-direct.ts",
     "scrape:full": "tsx src/scrapers/scrape-full.ts",
     "scrape:all": "tsx src/scrapers/run.ts all",
     "scrape": "tsx src/scrapers/run.ts",

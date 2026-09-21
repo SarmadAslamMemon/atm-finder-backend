@@ -23,6 +23,8 @@ export const PROVIDER_SLUGS = [
   'bok',
   'ztbl',
   'fwbl',
+  'jazzcash',
+  'easypaisa',
 ] as const;
 export type ProviderSlug = (typeof PROVIDER_SLUGS)[number];
 
