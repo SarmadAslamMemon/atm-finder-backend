@@ -5,7 +5,7 @@ export async function sendOtpEmail(email: string, otp: string): Promise<void> {
   const port = process.env.SMTP_PORT;
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
-  const from = process.env.SMTP_FROM || 'no-reply@atmfinder.pk';
+  const from = process.env.SMTP_FROM || process.env.SMTP_USER || 'no-reply@atmfinder.pk';
 
   if (!host || !user || !pass) {
     console.log('\n======================================================');
@@ -17,15 +17,20 @@ export async function sendOtpEmail(email: string, otp: string): Promise<void> {
   }
 
   try {
-    const transporter = nodemailer.createTransport({
-      host,
-      port: port ? parseInt(port, 10) : 587,
-      secure: port === '465',
-      auth: {
-        user,
-        pass,
-      },
-    });
+    const isGmail = host.toLowerCase().includes('gmail');
+    const transporter = nodemailer.createTransport(
+      isGmail
+        ? {
+            service: 'gmail',
+            auth: { user, pass },
+          }
+        : {
+            host,
+            port: port ? parseInt(port, 10) : 587,
+            secure: port === '465',
+            auth: { user, pass },
+          }
+    );
 
     await transporter.sendMail({
       from: `"ATM Finder Pakistan" <${from}>`,
