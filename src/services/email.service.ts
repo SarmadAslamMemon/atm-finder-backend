@@ -1,5 +1,20 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { Resend } from 'resend';
 import nodemailer from 'nodemailer';
+
+let cachedLogoBuffer: Buffer | null = null;
+function getLogoBuffer(): Buffer | null {
+  if (cachedLogoBuffer) return cachedLogoBuffer;
+  try {
+    const p = path.resolve('assets/app_logo.png');
+    if (fs.existsSync(p)) {
+      cachedLogoBuffer = fs.readFileSync(p);
+      return cachedLogoBuffer;
+    }
+  } catch {}
+  return null;
+}
 
 function buildOtpEmailHtml(otp: string): string {
   return `<!DOCTYPE html>
@@ -9,105 +24,108 @@ function buildOtpEmailHtml(otp: string): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ATM Finder Verification Code</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #f4f6f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #1e293b;">
-  <!-- Invisible preheader for inbox preview -->
-  <div style="display: none; font-size: 1px; color: #f4f6f9; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
-    Your ATM Finder verification code is ${otp}. Valid for 10 minutes.
+<body style="margin: 0; padding: 0; background-color: #FAF8F5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #1C1917;">
+  <!-- Preheader -->
+  <div style="display: none; font-size: 1px; color: #FAF8F5; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
+    ${otp} is your ATM Finder verification code. Valid for 10 minutes.
   </div>
 
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f4f6f9; padding: 32px 16px;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #FAF8F5; padding: 40px 16px;">
     <tr>
       <td align="center">
         <!-- Main Card -->
-        <table role="presentation" width="100%" style="max-width: 540px; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06); border: 1px solid #e2e8f0;" cellspacing="0" cellpadding="0" border="0">
+        <table role="presentation" width="100%" style="max-width: 520px; background-color: #FFFFFF; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(229, 83, 42, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03); border: 1px solid #F2ECE6;" cellspacing="0" cellpadding="0" border="0">
           
-          <!-- Top Accent Line -->
+          <!-- Top Sunset Coral Gradient Accent -->
           <tr>
-            <td style="height: 5px; background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);"></td>
+            <td style="height: 6px; background: linear-gradient(90deg, #FF6A42 0%, #FF8F6B 50%, #FFA27E 100%);"></td>
           </tr>
 
-          <!-- Header / Brand -->
+          <!-- Header / Logo & App Name -->
           <tr>
-            <td style="padding: 32px 32px 20px 32px; text-align: center;">
+            <td style="padding: 36px 36px 20px 36px; text-align: center;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center">
                 <tr>
-                  <td style="vertical-align: middle;">
-                    <img src="https://atmfinder.varbox.dev/app_logo.png" alt="ATM Finder Logo" width="44" height="44" style="border-radius: 10px; display: block; border: 0;" />
-                  </td>
-                  <td style="vertical-align: middle; padding-left: 12px; text-align: left;">
-                    <div style="font-size: 18px; font-weight: 700; color: #0f172a; letter-spacing: -0.2px;">ATM Finder</div>
-                    <div style="font-size: 12px; color: #64748b; font-weight: 500;">Pakistan Branch &amp; ATM Locator</div>
+                  <td align="center">
+                    <img src="https://raw.githubusercontent.com/SarmadAslamMemon/atm-finder-backend/main/assets/app_logo.png" alt="ATM Finder Logo" width="56" height="56" style="width: 56px; height: 56px; border-radius: 14px; display: block; border: 0; margin: 0 auto 12px auto; box-shadow: 0 4px 10px rgba(255, 106, 66, 0.18);" />
+                    <div style="font-size: 21px; font-weight: 800; color: #1C1917; letter-spacing: -0.3px;">ATM Finder</div>
+                    <div style="font-size: 13px; color: #78716C; font-weight: 500; margin-top: 2px;">Pakistan Branch &amp; ATM Locator</div>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- Divider -->
+          <!-- Soft Divider -->
           <tr>
-            <td style="padding: 0 32px;">
-              <div style="border-top: 1px solid #f1f5f9;"></div>
+            <td style="padding: 0 36px;">
+              <div style="border-top: 1px solid #F7F3EE;"></div>
             </td>
           </tr>
 
-          <!-- Content Body -->
+          <!-- Main Body -->
           <tr>
-            <td style="padding: 28px 32px 20px 32px;">
-              <h1 style="font-size: 20px; font-weight: 700; color: #0f172a; margin: 0 0 12px 0; letter-spacing: -0.3px;">
-                Confirm your verification code
+            <td style="padding: 28px 36px 24px 36px;">
+              <h1 style="font-size: 19px; font-weight: 700; color: #1C1917; margin: 0 0 10px 0; letter-spacing: -0.2px;">
+                Verify your account
               </h1>
-              <p style="font-size: 14px; line-height: 1.6; color: #475569; margin: 0 0 24px 0;">
-                Hello, thank you for using ATM Finder. Please enter this 6-digit one-time password (OTP) in the application to complete verification:
+              <p style="font-size: 14px; line-height: 1.6; color: #57534E; margin: 0 0 24px 0;">
+                Welcome to ATM Finder. Please enter the one-time verification code below into the application to complete your sign-in:
               </p>
 
-              <!-- OTP Code Display Box -->
+              <!-- OTP Code Display Card -->
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 24px 0;">
                 <tr>
-                  <td align="center" style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 22px 16px;">
-                    <div style="font-family: 'SF Mono', Monaco, Menlo, Consolas, 'Courier New', monospace; font-size: 36px; font-weight: 800; letter-spacing: 10px; color: #4338ca; padding-left: 10px;">
+                  <td align="center" style="background: #FFF6F2; border: 1.5px solid #FFDEC9; border-radius: 16px; padding: 26px 16px;">
+                    <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #E5532A; margin-bottom: 8px;">
+                      Verification Code
+                    </div>
+                    <div style="font-family: 'SF Mono', Monaco, Menlo, Consolas, 'Courier New', monospace; font-size: 38px; font-weight: 800; letter-spacing: 10px; color: #E5532A; padding-left: 10px;">
                       ${otp}
                     </div>
-                    <div style="font-size: 12px; color: #64748b; font-weight: 500; margin-top: 8px;">
-                      ⏱ This code expires in <strong>10 minutes</strong>
+                    <div style="margin-top: 10px;">
+                      <span style="display: inline-block; background-color: #FFFFFF; border: 1px solid #FFDEC9; color: #78716C; font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 20px;">
+                        ⏱️ Expires in 10 minutes
+                      </span>
                     </div>
                   </td>
                 </tr>
               </table>
 
-              <!-- Security Notice -->
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #fefce8; border: 1px solid #fef08a; border-radius: 8px; margin-bottom: 24px;">
+              <!-- Security Callout -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #FFFBEB; border: 1px solid #FEF3C7; border-radius: 10px; margin-bottom: 24px;">
                 <tr>
                   <td style="padding: 12px 16px;">
-                    <p style="font-size: 12px; color: #854d0e; line-height: 1.5; margin: 0;">
-                      <strong>Security Tip:</strong> Never share this code with anyone. ATM Finder support will never ask you for your verification code.
+                    <p style="font-size: 12px; color: #92400E; line-height: 1.5; margin: 0;">
+                      <strong>Security Tip:</strong> Never share this code with anyone. ATM Finder support will never call or message asking for your code.
                     </p>
                   </td>
                 </tr>
               </table>
 
-              <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin: 0;">
-                If you did not request this verification, please safely ignore this email or contact support if you suspect unauthorized activity.
+              <p style="font-size: 13px; color: #A8A29E; line-height: 1.5; margin: 0;">
+                If you did not request this verification, you can safely disregard this email.
               </p>
             </td>
           </tr>
 
           <!-- Footer -->
           <tr>
-            <td style="background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 24px 32px; text-align: center;">
-              <!-- Quick Links -->
-              <div style="font-size: 12px; color: #64748b; margin-bottom: 12px;">
-                <a href="https://atmfinder.varbox.dev" style="color: #4f46e5; text-decoration: none; font-weight: 500;" target="_blank">Website</a>
-                <span style="color: #cbd5e1; margin: 0 8px;">•</span>
-                <a href="https://atmfinder.varbox.dev/privacy" style="color: #4f46e5; text-decoration: none; font-weight: 500;" target="_blank">Privacy Policy</a>
-                <span style="color: #cbd5e1; margin: 0 8px;">•</span>
-                <a href="https://atmfinder.varbox.dev/terms" style="color: #4f46e5; text-decoration: none; font-weight: 500;" target="_blank">Terms of Service</a>
-                <span style="color: #cbd5e1; margin: 0 8px;">•</span>
-                <a href="mailto:support@varbox.dev" style="color: #4f46e5; text-decoration: none; font-weight: 500;">Support</a>
+            <td style="background-color: #FAF8F5; border-top: 1px solid #F2ECE6; padding: 24px 36px; text-align: center;">
+              <!-- Navigation Links -->
+              <div style="font-size: 12px; color: #78716C; margin-bottom: 12px;">
+                <a href="https://atmfinder.varbox.dev" style="color: #FF6A42; text-decoration: none; font-weight: 600;" target="_blank">Website</a>
+                <span style="color: #D6D3D1; margin: 0 8px;">•</span>
+                <a href="https://atmfinder.varbox.dev/privacy" style="color: #FF6A42; text-decoration: none; font-weight: 600;" target="_blank">Privacy</a>
+                <span style="color: #D6D3D1; margin: 0 8px;">•</span>
+                <a href="https://atmfinder.varbox.dev/terms" style="color: #FF6A42; text-decoration: none; font-weight: 600;" target="_blank">Terms</a>
+                <span style="color: #D6D3D1; margin: 0 8px;">•</span>
+                <a href="mailto:support@varbox.dev" style="color: #FF6A42; text-decoration: none; font-weight: 600;">Support</a>
               </div>
 
-              <div style="font-size: 11px; color: #94a3b8; line-height: 1.5;">
-                ATM Finder Pakistan • Powered by Varbox<br />
-                &copy; 2026 Varbox. All rights reserved.
+              <div style="font-size: 11px; color: #A8A29E; line-height: 1.6;">
+                ATM Finder Pakistan • Locate 15,000+ ATMs &amp; Branches<br />
+                Powered by <strong>Varbox</strong> • &copy; 2026 Varbox. All rights reserved.
               </div>
             </td>
           </tr>
@@ -125,12 +143,23 @@ export async function sendOtpEmail(email: string, otp: string): Promise<void> {
   const htmlContent = buildOtpEmailHtml(otp);
 
   const resendApiKey = process.env.RESEND_API_KEY;
+  const logoBuffer = getLogoBuffer();
 
   // 1. Try Resend HTTP API first (Uses HTTPS port 443 - works seamlessly on Render)
   if (resendApiKey) {
     try {
       const resend = new Resend(resendApiKey);
       const from = process.env.RESEND_FROM || 'ATM Finder <noreply@varbox.dev>';
+
+      const attachments = logoBuffer
+        ? [
+            {
+              filename: 'app_logo.png',
+              content: logoBuffer,
+              content_id: 'app_logo',
+            },
+          ]
+        : [];
 
       const { data, error } = await resend.emails.send({
         from,
@@ -139,6 +168,7 @@ export async function sendOtpEmail(email: string, otp: string): Promise<void> {
         subject,
         text: textContent,
         html: htmlContent,
+        attachments,
       });
 
       if (error) {
@@ -184,12 +214,23 @@ export async function sendOtpEmail(email: string, otp: string): Promise<void> {
           }
     );
 
+    const attachments = logoBuffer
+      ? [
+          {
+            filename: 'app_logo.png',
+            content: logoBuffer,
+            cid: 'app_logo',
+          },
+        ]
+      : [];
+
     await transporter.sendMail({
       from: `"ATM Finder Pakistan" <${from}>`,
       to: email,
       subject,
       text: textContent,
       html: htmlContent,
+      attachments,
     });
     console.log(`[Email] OTP successfully sent to ${email}`);
   } catch (error) {
