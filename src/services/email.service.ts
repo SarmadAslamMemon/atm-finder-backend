@@ -164,7 +164,7 @@ export async function sendOtpEmail(email: string, otp: string): Promise<void> {
       const { data, error } = await resend.emails.send({
         from,
         to: email,
-        reply_to: 'support@varbox.dev',
+        replyTo: 'support@varbox.dev',
         subject,
         text: textContent,
         html: htmlContent,
